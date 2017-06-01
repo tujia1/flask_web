@@ -1,0 +1,57 @@
+<html>
+<head>
+<title>tujia.com</title>
+<head>
+<body>
+   
+                              《我的虚拟机》实时监控
+
+
+
+<div id="container" style="height: 400px; min-width: 310px"></div>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script type="text/javascript">  
+     Highcharts.setOptions({ global: { useUTC: false } });   
+ </script>  
+<script>
+$.getJSON('/data', function (data) {
+
+    Highcharts.stockChart('container', {
+        chart:{
+        events:{
+            load:function(){
+                var series = this.series[0]
+                setInterval(function(){
+                $.getJSON('/data',function(res){
+                    $.each(res,function(i,v){
+                        series.addPoint(v)
+                    })
+                })
+                },3000)
+            }
+        }
+        },
+        rangeSelector: {
+            selected: 1
+        },
+
+        title: {
+            text: 'AAPL Stock Price'
+        },
+
+        series: [{
+            name: 'AAPL',
+            data: data,
+            tooltip: {
+                valueDecimals: 2
+            }
+        }]
+    });
+});
+</script>
+</body>
+</html>
+
+
